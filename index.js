@@ -8,10 +8,10 @@ app.use(express.json());
 
 const port = 4000; 
 const data = [
-  { id: 1, name: "Claudia" },
-  { id: 2, name: "Andrea" },
-  { id: 3, name: "Antonio" },
-  { id: 4, name: "Baltazar" },
+  { id: 40, name: "Claudia" },
+  { id: 20, name: "Andrea" },
+  { id: 30, name: "Antonio" },
+  { id: 10, name: "Baltazar" },
 ];
 
 // PRINCIPIOS SOLID
@@ -22,8 +22,29 @@ app.get("/student", (req, res) => {
 });
 
 app.get("/student/:id", (req, res) => {
-   res.send(data.filter(student=>student.id==req.params.id));
+
+   const studentFilter = data.filter(student=>student.id==req.params.id);
+   if (studentFilter.length > 0){
+    return res.send(studentFilter);
+   }
+   return res.status(200).send({ data: 'El Id ' + req.params.id + ' de Estudiante no ha sido encontrado' });
+
 });
+
+app.delete('/student/:id', (req, res) => {
+  const studentId = parseInt(req.params.id);
+  const index = (data.findIndex(student => student.id==studentId));
+
+  console.log(index);
+  if (index >= 0 )
+  {
+    data.splice(index, 1);
+    console.log(data);
+    return res.send('Estudiante eliminado');
+  }
+  console.log(data);
+  return res.status(200).send({ data: 'El Id ' + req.params.id + ' de Estudiante no ha sido encontrado' });
+})
 
 app.listen(port, () => {
   console.log("Servidor escuchando al puerto:" + port);
